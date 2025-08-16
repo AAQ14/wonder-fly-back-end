@@ -4,6 +4,7 @@ const logger = require('morgan')
 const dotenv = require('dotenv').config()
 const cors = require('cors')
 const mongoose = require('mongoose')
+const flightRoutes = require('./routes/flightRoutes')
 
 //middlewares
 app.use(logger('dev'))
@@ -16,6 +17,7 @@ mongoose.connection.on('connect', ()=>{
 })
 
 //routes
+app.use('/flights', flightRoutes )
 
 //local host port
 port = (process.env.PORT)
