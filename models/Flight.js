@@ -2,18 +2,19 @@ const {model, Schema} = require('mongoose')
 
 const flightSchema = new Schema({
     from: {
-        type:String,
-        required: true,
-        enum: ["Bahrain", "China", "Jordan", "Italy", "Mexico", "Peru", "India", "Rio de Janerio"]
-    },
+        type: Schema.Types.ObjectId,
+        ref: 'Country',
+        required:true},
     to: {
-        type:String,
-        required: true,
-        enum: ["Bahrain", "China", "Jordan", "Italy", "Mexico", "Peru", "India", "Rio de Janerio"]
-    }, Date:{
+        type: Schema.Types.ObjectId,
+        ref: 'Country',
+        required:true
+    },
+     Date:{
         type: Date,
         required: true
-    },price:{
+    },
+    price:{
         type: Number,
         required: true
     }
