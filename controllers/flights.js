@@ -51,3 +51,24 @@ const deleteFlight = async(req,res) =>{
         res.status(500).json({error: err.message})
     }
 }
+
+const updateFlight = async(req,res) =>{
+    try {
+        const flight = await Flight.findByIdAndUpdate(req.params.id, req.body, {new:true})
+        if(flight){
+            res.status(200).json(flight)
+        }else{
+            res.sendStatus(404)
+        }
+    } catch (err) {
+        res.status(500).json({error: err.message})
+    }
+}
+
+module.exports = {
+    flightIndex,
+    addFlight,
+    flightDetails,
+    deleteFlight,
+    updateFlight
+}
