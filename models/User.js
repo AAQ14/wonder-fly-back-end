@@ -16,6 +16,9 @@ const userSchema = new Schema({
         type: String,
         required: true,
         enum: ["user", "manager"]
+    },bookedFlights :{
+        type: Schema.Types.ObjectId,
+        ref: 'Flight'
     }
 })
 
