@@ -37,3 +37,17 @@ const flightDetails = async(req,res) => {
         res.status(500).json({error: err.message})
     }
 }
+
+const deleteFlight = async(req,res) =>{
+    try {
+        const flight = await Flight.findByIdAndDelete(req.params.id)
+        if(flight){
+            res.status(200).json(flight)
+        }else{
+            res.sendStatus(404)
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({error: err.message})
+    }
+}
