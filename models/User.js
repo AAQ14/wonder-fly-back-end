@@ -1,4 +1,5 @@
 const { model, Schema } = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const userSchema = new Schema({
     firstName: {
@@ -15,7 +16,7 @@ const userSchema = new Schema({
         unique: true,
         lowercase: true
     }, 
-    password:{
+     passwordHash:{
  type: String,
     required: true
     },
@@ -28,6 +29,10 @@ const userSchema = new Schema({
         ref: 'Flight'
     }
 })
+// helper method to compare passwords
+userSchema.methods.validatePassword = function (password) {
+  return bcrypt.compare(password, this.passwordHash)
+}
 
 const User = model("User", userSchema)
 
