@@ -8,7 +8,7 @@ const countrySchema = new Schema({
     },
     timeZone :{
         type: String
-    },placesToVisit :[{
+    },placesToVisit :[ {
         type: String
     }]
 })
