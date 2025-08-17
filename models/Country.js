@@ -1,4 +1,4 @@
-const {model,Schema } = require('mongoose')
+const { model, Schema } = require('mongoose')
 
 const countrySchema = new Schema({
     country: {
@@ -6,9 +6,9 @@ const countrySchema = new Schema({
         required: true,
         enum: ["Bahrain", "China", "Jordan", "Italy", "Mexico", "Peru", "India", "Rio de Janeiro"]
     },
-    timeZone :{
+    timeZone: {
         type: String
-    },placesToVisit :[{
+    }, placesToVisit: [{
         type: String
     }]
 })
