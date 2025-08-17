@@ -6,6 +6,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const countriesRoutes= require('./routes/countriesRoutes')
 const flightRoutes = require('./routes/flightRoutes')
+const userRoutes = require("./routes/userRoutes")
 
 //middlewares
 app.use(logger('dev'))
@@ -21,6 +22,7 @@ mongoose.connection.on('connect', ()=>{
 app.use(cors({origin: 'http://localhost:5173'}))
 app.use('/flights', flightRoutes )
 app.use('/countries',countriesRoutes)
+app.use('/users', userRoutes)
 
 //local host port
 port = (process.env.PORT)
