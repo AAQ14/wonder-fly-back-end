@@ -7,8 +7,8 @@ const countryController=require('../controllers/countries')
 router.post('/new', countryController.createCountry)
 router.get('/',countryController.indexCountry)
 router.get('/:id',countryController.showCountry)
-router.put('/:id',countryController.updateCountry)
-router.delete('/:id',countryController.deleteCountry)
+router.put('/update/:id',countryController.updateCountry)
+router.delete('/delete/:id',countryController.deleteCountry)
 
 //Export👇
 module.exports=router
