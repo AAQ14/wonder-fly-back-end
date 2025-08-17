@@ -18,6 +18,7 @@ mongoose.connection.on('connect', ()=>{
 })
 
 //routes
+app.use(cors({origin: 'http://localhost:5173'}))
 app.use('/flights', flightRoutes )
 app.use('/countries',countriesRoutes)
 
