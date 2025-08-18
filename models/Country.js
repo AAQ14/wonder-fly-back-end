@@ -8,7 +8,9 @@ const countrySchema = new Schema({
     },
     timeZone :{
         type: String
-    }
+    }, placesToVisit: [{
+        type: String
+    }]
 })
 
 const Country = model("Country", countrySchema)

@@ -10,7 +10,7 @@ const flightSchema = new Schema({
         ref: 'Country',
         required:true
     },
-     Date:{
+     date:{
         type: Date,
         required: true
     },
