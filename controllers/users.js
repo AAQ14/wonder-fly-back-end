@@ -24,7 +24,7 @@ async function deleteUser(req, res) {
             res.sendStatus(404)
         }
     }
-    catch {
+    catch(error) {
         console.log(error)
         res.status(500).json({ error: error.message })
     }
