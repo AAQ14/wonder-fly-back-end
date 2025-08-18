@@ -2,7 +2,7 @@ const Flight = require('../models/Flight')
 
 async function flightIndex(req,res){
     try {
-        const allFlights = await Flight.find()
+        const allFlights = await Flight.find().populate("to from")
         if(allFlights.length){
             res.status(200).json(allFlights)
         }else{
