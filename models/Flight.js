@@ -18,11 +18,6 @@ const flightSchema = new Schema({
         type: Number,
         required: true
     },
-    class:{
-      type: String,
-        enum: ["Economy", "Permium Economy", "Business","First Class"],
-        default: "user"  
-    }
 
 })
 
