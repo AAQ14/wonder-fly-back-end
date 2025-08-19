@@ -15,23 +15,32 @@ const userSchema = new Schema({
         required: true,
         unique: true,
         lowercase: true
-    }, 
-     passwordHash:{
- type: String,
-    required: true
+    },
+    passwordHash: {
+        type: String,
+        required: true
     },
     userType: {
         type: String,
         enum: ["user", "manager"],
         default: "user"
-    }, bookedFlights: {
+    }, bookedFlights: [{
         type: Schema.Types.ObjectId,
         ref: 'Flight'
-    }
+    }],lastLogin:{
+        type: Date,
+        default: Date.now
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    virificationToken: String,
+    verificationTokenExpiresAt: Date
 })
 // helper method to compare passwords
 userSchema.methods.validatePassword = function (password) {
-  return bcrypt.compare(password, this.passwordHash)
+    return bcrypt.compare(password, this.passwordHash)
 }
 
 const User = model("User", userSchema)
