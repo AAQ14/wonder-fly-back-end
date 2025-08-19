@@ -44,15 +44,15 @@ exports.register = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite : process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-    res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
+   return res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
 
   }
   catch (error) {
-    res.json({success: false,  message: error.message })
+   return res.json({ success: false, message: error.message })
   }
 }
 
@@ -85,12 +85,12 @@ exports.verifyEmail = async (req, res) => {
 
 // POST /auth/login👇
 exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body
+  const { email, password } = req.body
 
-    if(!email || !password){
-      return res.json({sucess: false, message: 'Email and password are required'})
-    }
+  if (!email || !password) {
+    return res.json({ sucess: false, message: 'Email and password are required' })
+  }
+  try {
     const user = await User.findOne({ email })
 
     if (!user) {
@@ -108,11 +108,22 @@ exports.login = async (req, res) => {
       userType: user.userType,
       fullName: `${user.firstName} ${user.lastName}`
     }
-    const token = jwt.sign(payload, SECRET, { expiresIn: '1h' })
+    const token = jwt.sign(payload, SECRET, { expiresIn: '7d' })
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+
     res.json({ token })
+    return res.json({success: true})
   } catch (err) {
-    res.status(500).json({ message: 'Server error' })
+    return res.status(500).json({ message: 'Server error' })
   }
 }
+
+
 
 
