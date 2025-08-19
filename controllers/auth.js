@@ -48,11 +48,11 @@ exports.register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-   return res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
+    return res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
 
   }
   catch (error) {
-   return res.json({ success: false, message: error.message })
+    return res.json({ success: false, message: error.message })
   }
 }
 
@@ -118,12 +118,22 @@ exports.login = async (req, res) => {
     })
 
     res.json({ token })
-    return res.json({success: true})
+    return res.json({ success: true })
   } catch (err) {
-    return res.status(500).json({ message: 'Server error' })
+    return res.status(500).json({ message: err.message })
   }
 }
 
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
+    })
 
-
-
+    return res.json({success: true, message: 'Logged out'})
+  } catch (err) {
+    return res.json({ sucess: false, message: err.message })
+  }
+}
