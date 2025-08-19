@@ -35,7 +35,7 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    virificationToken: String,
+    verificationToken: String,
     verificationTokenExpiresAt: Date
 })
 // helper method to compare passwords

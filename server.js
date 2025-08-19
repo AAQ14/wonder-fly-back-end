@@ -30,7 +30,7 @@ app.use('/auth', authRoutes)
 
 
 //local host port
-port = (process.env.PORT)
-app.listen(port || 3000, ()=>{
-    console.log('listening on port 3000')
+port = (process.env.PORT) || 3000
+app.listen(port, ()=>{
+    console.log('listening on port: ', port)
 })
