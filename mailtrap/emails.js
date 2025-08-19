@@ -19,3 +19,5 @@ exports.sendVerificationEmail= async(email,verificationToken) => {
         throw new Error (`Error sending verification email: ${err}` )
     }
 }
+
+// exports.sendWelcomeEmail = async

@@ -45,6 +45,33 @@ exports.register = async (req, res) => {
   }
 }
 
+//verify email
+exports.verifyEmail = async(req,res) =>{
+  const {code} = req.body
+  try {
+    const user = await User.findOne({
+      verificationToken: code,
+      verificationTokenExpiresAt: {$gt : Date.now}
+    })
+
+    if(!user) {
+      return res.status(404).json({success: false, message: "Invalid or expired verification code"})
+    }
+
+    user.isVerified = true
+
+    //remove the verification token and expire date from the data base
+    user.verificationToken = undefined
+    user.verificationTokenExpiresAt = undefined 
+
+    await user.save()
+
+    // await sendWelcomeEmail(user.email, user.name)
+  } catch (err) {
+    
+  }
+}
+
 // POST /auth/login👇
 exports.login = async (req, res) => {
   try {
