@@ -4,7 +4,7 @@ const SECRET = process.env.JWT_SECRET
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const {transporter} = require('../config/nodemailer')
-const { use } = require('react')
+
 
 //POST /auth/register👇
 exports.register = async (req, res) => {
@@ -127,7 +127,7 @@ exports.sendVerifyOtp = async(req,res)=>{
 
     const user = await User.findById(userId)
 
-    if(user.isVerified){
+    if(user. isVerified){
       return res.json({success: false, message: "Account already verified"})
     }
 
