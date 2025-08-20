@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { generateTokenAndSetCookie } = require('../utils/generateTokenAndSetCookie')
 const { sendVerificationEmail } = require("../mailtrap/emails")
+const {transporter} = require('../config/nodemailer')
 
 //POST /auth/register👇
 exports.register = async (req, res) => {
@@ -49,10 +50,23 @@ exports.register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-    res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
+    console.log(email)
+    console.log(process.env.SMTP_USER)
+    console.log(transporter)
+    //sending welcome email
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject: 'welcome to wonderfly',
+      text: `welcome to our website, ur account has been created with email: ${email} `
+    } 
+
+    await transporter.sendMail(mailOptions)
+     res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
 
   }
   catch (error) {
+    console.log(error)
     return res.json({ success: false, message: error.message })
   }
 }
