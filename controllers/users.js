@@ -85,10 +85,25 @@ const bookFlight = async(req,res) => {
         console.log(user)
     } catch (err) {
         console.log(err)
-        res.status(500).json({error: err})
+        res.status(500).json({error: err.message})
     }
 } 
 
+const cancelFlight = async(req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+
+        // const findFlight = user.bookedFlights.find((flight)=>{
+        //     return flight === req.body
+        // })
+        console.log(req.body)
+        user.bookedFlights.splice(req.body, 1)
+        user.save()
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({error: err.message})
+    }
+}
 //Export👇
 module.exports = {
     createUser,
@@ -96,5 +111,6 @@ module.exports = {
     indexUser, 
     userDetails,
     updateUser,
-    bookFlight
+    bookFlight,
+    cancelFlight
 }
