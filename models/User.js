@@ -36,9 +36,7 @@ const userSchema = new Schema({
         default: false
     },
     verifyOtp: {type:String, default: ''},
-    verifyOtpExpireAt: {type: Number, default: 0},
-    resetOtp: {type:String, default: ''},
-    resetOtpExpireAt: {type: Number, default:0}
+    verifyOtpExpireAt: {type: Number, default: 0}
 })
 // helper method to compare passwords
 userSchema.methods.validatePassword = function (password) {
