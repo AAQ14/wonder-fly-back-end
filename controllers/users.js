@@ -49,7 +49,7 @@ const indexUser = async (req, res) => {
 //get user details👇
 const userDetails = async (req,res) =>{
     try {
-        const user = await User.findById(req.params.id)
+        const user = await User.findById(req.params.id).populate("bookedFlights")
         if(user){
             res.status(200).json(user)
         }else{
