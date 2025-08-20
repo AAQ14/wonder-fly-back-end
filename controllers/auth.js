@@ -99,7 +99,7 @@ exports.login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-     res.json({ success: true })
+     res.json({ success: true, token })
   } catch (err) {
     return res.status(500).json({ message: err.message })
   }
