@@ -4,7 +4,6 @@ const SECRET = 'supersecret'
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const {generateTokenAndSetCookie} = require('../utils/generateTokenAndSetCookie')
-const {sendVerificationEmail} = require("../mailtrap/emails")
 
 //POST /auth/register👇
 exports.register = async (req, res) => {
@@ -34,8 +33,6 @@ exports.register = async (req, res) => {
 
     //creating token jwt
     generateTokenAndSetCookie(res, newUser._id)
-
-    await sendVerificationEmail(newUser.email, verificationToken)
 
     res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
 
