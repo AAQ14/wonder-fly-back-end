@@ -1,5 +1,6 @@
 //Const👇
 const User = require('../models/User')
+const Flight = require('../models/Flight')
 
 //Create👇
 async function createUser(req, res) {
@@ -74,6 +75,17 @@ try {
 }
 }
 
+const bookFlight = async(req,res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        user.bookedFlights.push(req.body)
+        user.save()
+        console.log(user)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({error: err})
+    }
+} 
 
 //Export👇
 module.exports = {
@@ -81,5 +93,6 @@ module.exports = {
     deleteUser,
     indexUser, 
     userDetails,
-    updateUser
+    updateUser,
+    bookFlight
 }
