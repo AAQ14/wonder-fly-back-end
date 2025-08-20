@@ -22,7 +22,7 @@ const userSchema = new Schema({
     },
     userType: {
         type: String,
-        enum: ["user", "manager"],
+        enum: ["user", "admin"],
         default: "user"
     }, bookedFlights: [{
         type: Schema.Types.ObjectId,
