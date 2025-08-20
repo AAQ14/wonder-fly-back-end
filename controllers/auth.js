@@ -3,8 +3,6 @@ const User = require('../models/User')
 const SECRET = process.env.JWT_SECRET
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const { generateTokenAndSetCookie } = require('../utils/generateTokenAndSetCookie')
-const { sendVerificationEmail } = require("../mailtrap/emails")
 const {transporter} = require('../config/nodemailer')
 
 //POST /auth/register👇
@@ -24,10 +22,6 @@ exports.register = async (req, res) => {
 
     // hash password
     const passwordHash = await bcrypt.hash(password, 10)
-
-    // //verification token
-    // const verificationToken = Math.floor(100000 + Math.random() * 900000).toString()
-    // console.log(verificationToken)
 
     // create user
     const newUser = new User({ firstName, lastName, email, password: passwordHash })
@@ -50,9 +44,6 @@ exports.register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-    console.log(email)
-    console.log(process.env.SMTP_USER)
-    console.log(transporter)
     //sending welcome email
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
@@ -62,7 +53,7 @@ exports.register = async (req, res) => {
     } 
 
     await transporter.sendMail(mailOptions)
-     res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
+     res.status(201).json({ message: 'User registered successfully' }) 
 
   }
   catch (error) {
@@ -71,32 +62,6 @@ exports.register = async (req, res) => {
   }
 }
 
-//verify email
-exports.verifyEmail = async (req, res) => {
-  const { code } = req.body
-  try {
-    const user = await User.findOne({
-      verificationToken: code,
-      verificationTokenExpiresAt: { $gt: Date.now }
-    })
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: "Invalid or expired verification code" })
-    }
-
-    user.isVerified = true
-
-    //remove the verification token and expire date from the data base
-    user.verificationToken = undefined
-    user.verificationTokenExpiresAt = undefined
-
-    await user.save()
-
-    // await sendWelcomeEmail(user.email, user.name)
-  } catch (err) {
-
-  }
-}
 
 // POST /auth/login👇
 exports.login = async (req, res) => {
