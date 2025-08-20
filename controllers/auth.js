@@ -4,6 +4,7 @@ const SECRET = process.env.JWT_SECRET
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const {transporter} = require('../config/nodemailer')
+const { use } = require('react')
 
 //POST /auth/register👇
 exports.register = async (req, res) => {
@@ -53,7 +54,7 @@ exports.register = async (req, res) => {
     } 
 
     await transporter.sendMail(mailOptions)
-     res.status(201).json({ message: 'User registered successfully' }) 
+     res.status(201).json({ success: true, message: 'User registered successfully' }) 
 
   }
   catch (error) {
@@ -116,5 +117,38 @@ exports.logout = async (req, res) => {
     return res.json({ success: true, message: 'Logged out' })
   } catch (err) {
     return res.json({ sucess: false, message: err.message })
+  }
+}
+
+//send verification OTP to the User's Email
+exports.sendVerifyOtp = async(req,res)=>{
+  try {
+    const {userId} = req.body
+
+    const user = await User.findById(userId)
+
+    if(user.isVerified){
+      return res.json({success: false, message: "Account already verified"})
+    }
+
+     const otp = String(Math.floor(100000 + Math.random() * 900000))
+
+     user.verifyOtp = otp
+     user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60* 1000
+
+     await user.save()
+
+     const mailOption = {
+      from: process.env.SENDER_EMAIL,
+      to: user.email,
+      subject: 'Account Verification OTP',
+      text: `Your OTP is ${otp}. Verify your account using this OTP.`
+    } 
+
+    await transporter.sendMail(mailOption)
+
+    res.json({success: true, message: 'Verification OTP sent on email'})
+  } catch (err) {
+    res.json({success: false, message: err.message})
   }
 }
