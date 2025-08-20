@@ -1,19 +1,18 @@
 //Imports👇
 const User = require('../models/User')
-const SECRET = 'supersecret'
+const SECRET = process.env.JWT_SECRET
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const {generateTokenAndSetCookie} = require('../utils/generateTokenAndSetCookie')
-const {sendVerificationEmail} = require("../mailtrap/emails")
+const {transporter} = require('../config/nodemailer')
 
 //POST /auth/register👇
 exports.register = async (req, res) => {
-  try {
 
+  try {
     const { firstName, lastName, email, password } = req.body
 
     if (!firstName || !lastName || !email || !password) {
-      throw new Error("All fields are required")
+      return res.json({ success: false, message: 'Missing Details' })
     }
 
     const existing = await User.findOne({ email })
@@ -24,38 +23,63 @@ exports.register = async (req, res) => {
     // hash password
     const passwordHash = await bcrypt.hash(password, 10)
 
-    //verification token
-    const verificationToken =  Math.floor(100000 + Math.random() * 900000).toString()
-    console.log(verificationToken)
-
     // create user
-    const newUser = new User({ firstName, lastName, email, passwordHash, verificationToken, verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000 })
+    const newUser = new User({ firstName, lastName, email, password: passwordHash })
     await newUser.save()
 
-    //creating token jwt
-    generateTokenAndSetCookie(res, newUser._id)
+    //generate token
+    const payload = {
+      id: newUser._id,
+      email: newUser.email,
+      newUserType: newUser.userType,
+      fullName: `${newUser.firstName} ${newUser.lastName}`
+    }
+    const token = jwt.sign(payload, SECRET, { expiresIn: '7d' })
 
-    await sendVerificationEmail(newUser.email, verificationToken)
+    // //send this token to the user via cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    })
 
-    res.status(201).json({ message: 'User registered successfully' }) //user: {...user._id, password: undefined}
+    //sending welcome email
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: email,
+      subject: 'welcome to wonderfly',
+      text: `welcome to our website, ur account has been created with email: ${email} `
+    } 
+
+    await transporter.sendMail(mailOptions)
+     res.status(201).json({ message: 'User registered successfully' }) 
 
   }
   catch (error) {
-    res.status(500).json({ message: 'Server error' })
+    console.log(error)
+    return res.json({ success: false, message: error.message })
   }
 }
 
+
 // POST /auth/login👇
 exports.login = async (req, res) => {
+
   try {
     const { email, password } = req.body
+
+    if (!email || !password) {
+      return res.json({ sucess: false, message: 'Email and password are required' })
+    }
+
     const user = await User.findOne({ email })
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    const isValid = await user.validatePassword(password)
+    const isValid = await bcrypt.compare(password, user.password)
     if (!isValid) {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
@@ -66,11 +90,31 @@ exports.login = async (req, res) => {
       userType: user.userType,
       fullName: `${user.firstName} ${user.lastName}`
     }
-    const token = jwt.sign(payload, SECRET, { expiresIn: '1h' })
-    res.json({ token })
+    const token = jwt.sign(payload, SECRET, { expiresIn: '7d' })
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+
+     res.json({ success: true })
   } catch (err) {
-    res.status(500).json({ message: 'Server error' })
+    return res.status(500).json({ message: err.message })
   }
 }
 
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict'
+    })
 
+    return res.json({ success: true, message: 'Logged out' })
+  } catch (err) {
+    return res.json({ sucess: false, message: err.message })
+  }
+}

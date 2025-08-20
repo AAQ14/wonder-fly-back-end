@@ -16,7 +16,7 @@ const userSchema = new Schema({
         unique: true,
         lowercase: true
     },
-    passwordHash: {
+    password: {
         type: String,
         required: true
     },
@@ -35,14 +35,16 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    verificationToken: String,
-    verificationTokenExpiresAt: Date
+    verifyOtp: {type:String, default: ''},
+    verifyOtpExpireAt: {type: Number, default: 0},
+    resetOtp: {type:String, default: ''},
+    resetOtpExpireAt: {type: Number, default:0}
 })
 // helper method to compare passwords
 userSchema.methods.validatePassword = function (password) {
     return bcrypt.compare(password, this.passwordHash)
 }
 
-const User = model("User", userSchema)
+const User = model.user || model("User", userSchema)
 
 module.exports = User
