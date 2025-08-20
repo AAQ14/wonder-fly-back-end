@@ -4,22 +4,26 @@ const logger = require('morgan')
 const dotenv = require('dotenv').config()
 const cors = require('cors')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
 
 const countriesRoutes= require('./routes/countriesRoutes')
 const flightRoutes = require('./routes/flightRoutes')
 const userRoutes = require("./routes/userRoutes")
 const authRoutes = require('./routes/authRoutes')
 
-
-//middlewares
-app.use(logger('dev'))
-app.use(express.json())
-
 //connect to db
 mongoose.connect(process.env.MONOGODB_URI)
 mongoose.connection.on('connect', ()=>{
     console.log(`Connected to MongoDB ${mongoose.connection.name}`)
 })
+
+//middlewares
+app.use(logger('dev'))
+app.use(express.json())
+app.use(cookieParser())
+app.use(cors({credentials: true})) //will send the cookies in the response
+
+
 
 //routes
 app.use(cors({origin: 'http://localhost:5173'}))
