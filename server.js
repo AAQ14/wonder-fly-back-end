@@ -11,6 +11,27 @@ const flightRoutes = require('./routes/flightRoutes')
 const userRoutes = require("./routes/userRoutes")
 const authRoutes = require('./routes/authRoutes')
 
+const {transporter} = require("./config/nodemailer")
+
+// let mailOptions = {
+//   from: "amnaa.qader114@gmail.com"
+// ,
+//   to: 'hopealasfoor@gmail.com',
+//   subject: 'Sending Email using Node.js',
+//   text: 'IT WORKS'
+// };
+
+// function sendEmail(){
+//    transporter.sendMail(mailOptions, function(error, info){
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     console.log('Email sent: ' + info.response);
+//   }
+
+//    })}
+//    sendEmail()
+
 //connect to db
 mongoose.connect(process.env.MONOGODB_URI)
 mongoose.connection.on('connect', ()=>{
