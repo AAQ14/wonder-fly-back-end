@@ -13,24 +13,6 @@ const authRoutes = require('./routes/authRoutes')
 
 const {transporter} = require("./config/nodemailer")
 
-// let mailOptions = {
-//   from: "amnaa.qader114@gmail.com"
-// ,
-//   to: 'hopealasfoor@gmail.com',
-//   subject: 'Sending Email using Node.js',
-//   text: 'IT WORKS'
-// };
-
-// function sendEmail(){
-//    transporter.sendMail(mailOptions, function(error, info){
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log('Email sent: ' + info.response);
-//   }
-
-//    })}
-//    sendEmail()
 
 //connect to db
 mongoose.connect(process.env.MONOGODB_URI)
@@ -48,7 +30,7 @@ app.use(cors({credentials: true})) //will send the cookies in the response
 
 
 //routes
-app.use(cors({origin: 'http://localhost:5173'}))
+app.use(cors({origin: process.env.BACK_END}))
 app.use('/flights', flightRoutes )
 app.use('/countries',countriesRoutes)
 app.use('/users', userRoutes)
